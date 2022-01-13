@@ -2,35 +2,28 @@
 clear;x=20
 while true; do
  if [ -f $(ps w|grep host.run|grep ssh|grep 80|awk '{print $1}') ]; then
-x=0;rm -rf /root/logremot.txt;echo "tunggu..." > /root/logremot.txt
+x=0;rm -rf /root/logremote.txt;echo "sedela su..." > /root/logremote.txt
 rm -rf /root/.ssh/known_hosts
-screen -dmS remote -L -Logfile /root/logremot.txt ssh -i ~/.ssh/id_xderm -o StrictHostKeyChecking=no -R 80:localhost:80 localhost.run
+screen -dmS remote -L -Logfile /root/logremote.txt ssh -i ~/.ssh/id_xderm -o StrictHostKeyChecking=no -R 80:localhost:80 localhost.run
  fi
  while [ $x -lt 20 ]; do
-host=$(cat /root/logremot.txt|grep tunneled|awk '{print $1}')
+host=$(cat /root/logremote.txt|grep tunneled|awk '{print $1}')
  if [ $x -eq 19 ]; then
 kill $(ps w|grep host.run|grep ssh|awk '{print $1}') 2>/dev/null
 x=20;break
  fi
   if [ ! -f $host ]; then
-echo "Sedang memperbarui link alternatif...." >> /root/logremot.txt
+echo "Update link alternatif...." >> /root/logremote.txt
 id=$(cat /etc/remote.txt 2>/dev/null)
  if [ -f $id ]; then
-id=$(curl -s --cookie-jar /tmp/cookie.txt 'https://anotepad.com/note/create' \
-  -H 'X-Requested-With: XMLHttpRequest' \
-  -H 'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36' \
-  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
-  -d "notetype=PlainText&noteaccess=2&notepassword=&notequickedit=false&notequickeditpassword=&notetitle=$host&notecontent=$host"|awk -F 'notenumber":"' '{print $2}'|awk -F '"' '{print $1}')
-echo "$id" > /etc/remote.txt
- fi
-curl -s --cookie /tmp/cookie.txt 'https://anotepad.com/note/save' \
-  -H 'X-Requested-With: XMLHttpRequest' \
-  -H 'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36' \
-  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
-  -d "number=$id&notetype=PlainText&noteaccess=2&notepassword=&notequickedit=false&notequickeditpassword=&notetitle=host&notecontent=$host";echo
-echo "https://anotepad.com/notes/$id" >> /root/logremot.txt
-echo "Host: $host ,https://anotepad.com/notes/$id";x=20;break
-  fi
+id=$(curl -s -X POST "https://api.telegram.org/bot$TOKEN_BOT/sendmessage" -d "chat_id=$CHAT_ID" -d "parse_mode=html" -d "text=$PESAN"
+# Bot telegram
+TOKEN_BOT="5060855938:AAGEghPMywY54HWtE3PsO2NxGCqqBgecRqo"
+CHAT_ID="1178201791"
+PESAN="Halo dikirim dari server <b>$(hostname)</b>%0D%0AYour url: $host"
+host=$(cat logremot.txt|grep tunneled|awk '{print $1}')
+curl -s -X POST "https://api.telegram.org/bot$TOKEN_BOT/sendmessage" -d "chat_id=$CHAT_ID" -d "parse_mode=html" -d "text=$PESAN"
+echo "Host: $host";x=20;break
 sleep 1;((x++))
  done
 sleep 1

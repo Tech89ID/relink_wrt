@@ -1,15 +1,11 @@
-# remote_openwrt
-sudah inclued auto start on boot.
+# Remote Link OpenWRT
 
-installer:
-# wget -O installer https://raw.githubusercontent.com/ryanfauzi1/remote_openwrt/main/installer && chmod +x installer && ./installer
+## Fitur:
+- inclued auto start on boot script.
+- link send by bot telegram
 
-untuk log url dll, ketik:
-# cat logremot.txt
 
-untuk buka xderm: http://urlnya/xderm 
+## untuk log url dll, ketik:
+cat logremot.txt
 
-untuk buka luci: http://urlnya/cgi-bin/luci
-
-atau lebih tepatnya ip 192.168.x.x ganti menjadi urlnya
 
